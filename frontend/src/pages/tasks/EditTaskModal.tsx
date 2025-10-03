@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { MotionDiv } from "@/lib/MotionComponent";
 
 export type EditModalType = {
 	tasks: Task[];
@@ -155,7 +156,11 @@ export default function EditTaskModal({
 			className="fixed inset-0 flex items-center justify-center bg-black/50 z-20 px-4"
 			onClick={() => setIsEditTask(false)}
 		>
-			<div
+			<MotionDiv
+				initial={{ opacity: 0, scale: 0.9 }}
+				animate={{ opacity: 1, scale: 1 }}
+				exit={{ opacity: 0, scale: 0.9 }}
+				transition={{ duration: 0.2 }}
 				className="bg-white rounded-2xl shadow-lg w-full max-w-md p-4"
 				onClick={(e) => e.stopPropagation()}
 			>
@@ -281,7 +286,7 @@ export default function EditTaskModal({
 						</Button>
 					</div>
 				</form>
-			</div>
+			</MotionDiv>
 		</div>
 	);
 }

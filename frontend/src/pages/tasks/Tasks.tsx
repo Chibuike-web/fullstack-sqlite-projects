@@ -199,16 +199,18 @@ export default function Tasks() {
 			</AnimatePresence>
 
 			{/* Delete task modal */}
-			{isEditTask && selectedTask && (
-				<EditTaskModal
-					setTasks={setTasks}
-					setIsEditTask={setIsEditTask}
-					selectedTask={selectedTask}
-					tasks={tasks}
-					setOptimisticTasks={setOptimisticTasks}
-					optimisticTasks={optimisticTasks}
-				/>
-			)}
+			<AnimatePresence>
+				{isEditTask && selectedTask && (
+					<EditTaskModal
+						setTasks={setTasks}
+						setIsEditTask={setIsEditTask}
+						selectedTask={selectedTask}
+						tasks={tasks}
+						setOptimisticTasks={setOptimisticTasks}
+						optimisticTasks={optimisticTasks}
+					/>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }
