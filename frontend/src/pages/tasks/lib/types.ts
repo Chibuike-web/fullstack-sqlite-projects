@@ -6,14 +6,14 @@ export type Task = {
 	taskPriority?: "low" | "medium" | "high";
 	taskStartDate: string;
 	taskDueDate: string;
-	status?: "editing" | "deleting";
+	status?: "editing" | "deleting" | "status";
 };
 
 export type Action =
 	| { type: "add"; task: Task }
 	| { type: "edit"; id: string }
 	| { type: "delete"; id: string }
-	| { type: "reaction"; id: string };
+	| { type: "status"; id: string };
 
 export type TaskErrors = {
 	taskNameError: string;

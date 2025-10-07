@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { EllipsisVertical, Plus } from "lucide-react";
-import { useEffect, useOptimistic, useState } from "react";
+import { startTransition, useEffect, useOptimistic, useState } from "react";
 import type { Action, Task } from "./lib/types";
 import { CreateTaskModal } from "./CreateTaskModal";
 import { DeleteTaskModal } from "./DeleteTaskModal";
 import { useErrorStore } from "./store/errorsStore";
 import EditTaskModal from "./EditTaskModal";
 import { AnimatePresence } from "motion/react";
+import { cn } from "@/lib/utils";
 
 function reducer(currrentTasks: Task[], action: Action): Task[] {
 	switch (action.type) {
@@ -16,6 +17,8 @@ function reducer(currrentTasks: Task[], action: Action): Task[] {
 			return currrentTasks.map((c) => (c.id === action.id ? { ...c, status: "deleting" } : c));
 		case "edit":
 			return currrentTasks.map((c) => (c.id === action.id ? { ...c, status: "editing" } : c));
+		case "status":
+			return currrentTasks.map((c) => (c.id === action.id ? { ...c, status: "status" } : c));
 		default:
 			return currrentTasks;
 	}
@@ -64,6 +67,28 @@ export default function Tasks() {
 		return () => document.removeEventListener("click", handleClick);
 	}, [menuOpen]);
 
+	const handleStatus = (task: Task) => {
+		setSelectedTask(task);
+
+		startTransition(async () => {
+			setOptimisticTasks({ type: "status", id: task.id });
+			try {
+				const res = await fetch(`http://localhost:3291/tasks/${task.id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ taskStatus: "completed" }),
+				});
+				if (!res.ok) throw new Error("Issue updating task status");
+
+				setTasks((prev) =>
+					prev.map((t) => (t.id === task.id ? { ...t, taskStatus: "completed" } : t))
+				);
+			} catch (error) {
+				console.error("Failed to update task", error);
+			}
+		});
+		setMenuOpen(null);
+	};
 	return (
 		<div className="max-w-2xl mx-auto p-4">
 			{/* Header */}
@@ -92,20 +117,25 @@ export default function Tasks() {
 								<div className="flex items-center gap-2">
 									{/* Status Badge */}
 									<span
-										className={`inline-block px-2 py-1 text-[clamp(10px,2vw,12px)] font-medium rounded-full leading-[1]
-						${task.taskStatus === "not started" ? "bg-gray-100 text-gray-700" : ""}
-						${task.taskStatus === "started" ? "bg-yellow-100 text-yellow-700" : ""}
-						${task.taskStatus === "completed" ? "bg-green-100 text-green-700" : ""}`}
+										className={cn(
+											"inline-block px-2 py-1 text-[clamp(10px,2vw,12px)] font-medium rounded-full leading-[1]",
+											task.taskStatus === "not started" ? "bg-gray-100 text-gray-700" : "",
+											task.taskStatus === "started" ? "bg-yellow-100 text-yellow-700" : "",
+											task.taskStatus === "completed" ? "bg-green-100 text-green-700" : "",
+											task.status === "status" ? "opacity-50" : ""
+										)}
 									>
 										{task.taskStatus}
 									</span>
 
 									{/* Priority Badge */}
 									<span
-										className={`inline-block px-2 py-1 text-[clamp(10px,2vw,12px)] font-medium rounded-full leading-[1]
-						${task.taskPriority === "low" ? "bg-gray-100 text-gray-700" : ""}
-						${task.taskPriority === "medium" ? "bg-blue-100 text-blue-700" : ""}
-						${task.taskPriority === "high" ? "bg-red-100 text-red-700" : ""}`}
+										className={cn(
+											"inline-block px-2 py-1 text-[clamp(10px,2vw,12px)] font-medium rounded-full leading-[1]",
+											task.taskPriority === "low" ? "bg-gray-100 text-gray-700" : "",
+											task.taskPriority === "medium" ? "bg-blue-100 text-blue-700" : "",
+											task.taskPriority === "high" ? "bg-red-100 text-red-700" : ""
+										)}
 									>
 										{task.taskPriority}
 									</span>
@@ -125,16 +155,13 @@ export default function Tasks() {
 									<ul className="absolute right-0 mt-2 w-max bg-white border rounded-lg p-1 shadow-lg z-10">
 										<li>
 											<button
-												onClick={() => {
-													setSelectedTask(task);
-													setTasks((prev) =>
-														prev.map((t) =>
-															t.id === task.id ? { ...t, taskStatus: "completed" } : t
-														)
-													);
-													setMenuOpen(null);
-												}}
-												className="w-full text-left px-4 py-2 text-sm text-green-500 hover:bg-green-50 rounded-[4px]"
+												onClick={() => handleStatus(task)}
+												className={cn(
+													"w-full text-left px-4 py-2 text-sm rounded-[4px]",
+													task.taskStatus === "completed"
+														? "opacity-50 text-gray-400 cursor-not-allowed"
+														: "text-green-500 hover:bg-green-50"
+												)}
 											>
 												Mark as completed
 											</button>
@@ -198,7 +225,7 @@ export default function Tasks() {
 				)}
 			</AnimatePresence>
 
-			{/* Delete task modal */}
+			{/* Edit task modal */}
 			<AnimatePresence>
 				{isEditTask && selectedTask && (
 					<EditTaskModal

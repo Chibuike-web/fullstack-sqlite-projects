@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", async (_, res) => {
 	try {
-		const result = await db.select().from(tasks).all();
+		const result = db.select().from(tasks).all();
 		res.json(result);
 	} catch (err) {
 		res.status(500).json({ error: "Failed to fetch tasks" });
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
 	}
 
 	try {
-		const newTask = await db
+		const newTask = db
 			.insert(tasks)
 			.values({
 				taskName,
@@ -78,24 +78,17 @@ router.put("/:taskId", async (req, res) => {
 		if (!taskId) return res.status(400).json({ message: "Id is missing" });
 		const { taskName, taskDescription, taskStatus, taskPriority, taskStartDate, taskDueDate } =
 			req.body;
-		if (
-			!taskName ||
-			!taskDescription ||
-			!taskStatus ||
-			!taskPriority ||
-			!taskStartDate ||
-			!taskDueDate
-		)
-			return res.status(400).json({ error: "All fields are required" });
 
-		const updateData = {
-			taskName,
-			taskDescription,
-			taskStatus,
-			taskPriority,
-			taskStartDate,
-			taskDueDate,
-		};
+		const updateData: Record<string, string> = {};
+		if (taskName !== undefined) updateData.taskName = taskName;
+		if (taskDescription !== undefined) updateData.taskDescription = taskDescription;
+		if (taskStatus !== undefined) updateData.taskStatus = taskStatus;
+		if (taskPriority !== undefined) updateData.taskPriority = taskPriority;
+		if (taskStartDate !== undefined) updateData.taskStartDate = taskStartDate;
+		if (taskDueDate !== undefined) updateData.taskDueDate = taskDueDate;
+
+		if (Object.keys(updateData).length === 0)
+			return res.status(400).json({ error: "No valid fields to update" });
 
 		const updated = await db
 			.update(tasks)
@@ -103,9 +96,7 @@ router.put("/:taskId", async (req, res) => {
 			.where(eq(tasks.id, Number(taskId)))
 			.returning();
 
-		if (updated.length === 0) {
-			return res.status(400).json({ message: "Task not found" });
-		}
+		if (updated.length === 0) return res.status(400).json({ message: "Task not found" });
 
 		res.json({ message: "Task updated", updated: updated[0] });
 	} catch (error) {
