@@ -107,7 +107,13 @@ export default function Tasks() {
 			{/* Task list */}
 			<div className="flex flex-col gap-4">
 				{optimisticTasks.map((task) => (
-					<div key={task.id} className=" bg-white border rounded-xl p-4">
+					<div
+						key={task.id}
+						className={cn(
+							"bg-white border rounded-xl p-4",
+							task.taskStatus === "completed" && "opacity-50 text-gray-400 cursor-not-allowed"
+						)}
+					>
 						<div className="w-full flex justify-between items-center">
 							<div className="flex items-center gap-3 flex-wrap">
 								<h3 className="font-semibold text-[clamp(14px,5vw,18px)] break-words leading-[1.2]">
