@@ -6,8 +6,8 @@ import Polls from "./pages/polls/Polls";
 import Notes from "./pages/notes/Notes";
 import Expenses from "./pages/expenses/Expenses";
 import Bookmarks from "./pages/bookmarks/Bookmarks";
-import PollSignIn from "./pages/polls/auth/PollSignIn";
-import PollSignUp from "./pages/polls/auth/PollSignUp";
+import PollsSignIn from "./pages/polls/auth/PollsSignIn";
+import PollsSignUp from "./pages/polls/auth/PollsSignUp";
 
 export default function App() {
 	return (
@@ -16,8 +16,8 @@ export default function App() {
 				<Route path="/" element={<Posts />} />
 				<Route path="/tasks" element={<Tasks />} />
 				<Route path="/polls" element={<Polls />} />
-				<Route path="/polls/sign-in" element={<PollSignIn />} />
-				<Route path="/polls/sign-up" element={<PollSignUp />} />
+				<Route path="/polls/sign-in" element={<PollsSignIn />} />
+				<Route path="/polls/sign-up" element={<PollsSignUp />} />
 				<Route path="/notes" element={<Notes />} />
 				<Route path="/expenses" element={<Expenses />} />
 				<Route path="/bookmarks" element={<Bookmarks />} />
