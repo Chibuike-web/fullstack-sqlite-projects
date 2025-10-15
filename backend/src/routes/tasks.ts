@@ -15,8 +15,6 @@ router.get("/", async (_, res) => {
 });
 
 router.post("/", async (req, res) => {
-	console.log("Incoming body:", req.body);
-
 	const { taskName, taskDescription, taskStatus, taskPriority, taskStartDate, taskDueDate } =
 		req.body;
 	if (

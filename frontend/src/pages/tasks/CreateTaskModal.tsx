@@ -1,7 +1,6 @@
 import { startTransition, useState, type FormEvent } from "react";
 import type { Action, Task, TaskErrors } from "./lib/types";
 import { useTaskFormStore, type TaskPriority, type TaskStatus } from "./store/taskFormStore";
-import { formatDuration } from "./lib/utils";
 import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -87,12 +86,12 @@ export const CreateTaskModal = ({
 	};
 	const handleCreateModal = async (e: FormEvent) => {
 		e.preventDefault();
-		const startTimestamp = new Date(taskDates.startDate).getTime();
-		const dueTimestamp = new Date(taskDates.dueDate).getTime();
-		const durationMs = dueTimestamp - startTimestamp;
-		const duration = formatDuration(durationMs);
+		// const startTimestamp = new Date(taskDates.startDate).getTime();
+		// const dueTimestamp = new Date(taskDates.dueDate).getTime();
+		// const durationMs = dueTimestamp - startTimestamp;
+		// const duration = formatDuration(durationMs);
 
-		let newErrors: TaskErrors = {
+		const newErrors: TaskErrors = {
 			taskNameError: "",
 			taskDescriptionError: "",
 			taskStartDateError: "",

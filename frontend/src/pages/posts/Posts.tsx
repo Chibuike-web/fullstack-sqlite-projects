@@ -157,7 +157,7 @@ export default function Posts() {
 				setPosts((prev) => prev.filter((p) => p.id !== postId));
 				console.log(data.message);
 			} catch (err) {
-				console.error("Issue delete post with ID:", postId);
+				console.error("Issue delete post with ID:", postId, err);
 				setErrors((prev) => ({ ...prev, delete: "Failed to delete post" }));
 			}
 		});

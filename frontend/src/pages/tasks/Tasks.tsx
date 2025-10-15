@@ -50,7 +50,7 @@ export default function Tasks() {
 			}
 		}
 		fetchPosts();
-	}, []);
+	}, [setErrors, setTasks]);
 
 	useEffect(() => {
 		const handleClick = (e: MouseEvent) => {

@@ -2,20 +2,26 @@
 	"name": "backend",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
 	"scripts": {
-		"dev": "tsx watch src/server.ts",
+		"dev": "tsx watch --env-file .env src/server.ts",
 		"db:generate:posts": "drizzle-kit generate --config=drizzle.config.posts.ts",
 		"db:push:posts": "drizzle-kit push --config=drizzle.config.posts.ts",
 		"db:migrate:posts": "pnpm db:generate:posts && pnpm db:push:posts --config=drizzle.config.posts.ts",
 		"db:generate:tasks": "drizzle-kit generate --config=drizzle.config.tasks.ts",
 		"db:push:tasks": "drizzle-kit push --config=drizzle.config.tasks.ts",
-		"db:migrate:tasks": "pnpm db:generate:tasks && pnpm db:push:tasks --config=drizzle.config.tasks.ts"
+		"db:migrate:tasks": "pnpm db:generate:tasks && pnpm db:push:tasks --config=drizzle.config.tasks.ts",
+		"db:generate:polls": "drizzle-kit generate --config=drizzle.config.polls.ts",
+		"db:push:polls": "drizzle-kit push --config=drizzle.config.polls.ts",
+		"db:migrate:polls": "pnpm db:generate:polls && pnpm db:push:polls --config=drizzle.config.polls.ts",
+		"lint": "tsc --noEmit",
+		"build": "tsc",
+		"start": "node --env-file .env dist/server.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
+		"@types/bcrypt": "^6.0.0",
 		"@types/better-sqlite3": "^7.6.13",
 		"@types/express": "^5.0.3",
 		"@types/node": "^24.1.0",
@@ -23,9 +29,12 @@
 		"typescript": "^5.9.2"
 	},
 	"dependencies": {
+		"bcrypt": "^6.0.0",
 		"better-sqlite3": "^12.2.0",
 		"drizzle-kit": "^0.31.4",
 		"drizzle-orm": "^0.44.4",
-		"express": "^5.1.0"
+		"express": "^5.1.0",
+		"jose": "^6.1.0",
+		"zod": "^4.1.12"
 	}
 }

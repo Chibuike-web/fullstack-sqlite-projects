@@ -1,7 +1,6 @@
-import { startTransition, useState, type FormEvent } from "react";
+import { startTransition, useEffect, useState, type FormEvent } from "react";
 import type { Action, Task, TaskErrors } from "./lib/types";
 import { useTaskFormStore, type TaskPriority, type TaskStatus } from "./store/taskFormStore";
-import { formatDuration } from "./lib/utils";
 import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -27,7 +26,6 @@ export default function EditTaskModal({
 	setOptimisticTasks,
 }: EditModalType) {
 	const task = optimisticTasks.find((t) => t.id === selectedTask.id);
-	if (!task) return;
 	const {
 		taskName,
 		taskDescription,
@@ -49,7 +47,8 @@ export default function EditTaskModal({
 		taskDueDateError: "",
 	});
 
-	useState(() => {
+	useEffect(() => {
+		if (!task) return;
 		setTaskName(task.taskName);
 		setTaskDescription(task.taskDescription ?? "");
 		setTaskStatus(task.taskStatus as TaskStatus);
@@ -58,7 +57,9 @@ export default function EditTaskModal({
 			startDate: task.taskStartDate,
 			dueDate: task.taskDueDate,
 		});
-	});
+	}, [task, setTaskName, setTaskDescription, setTaskStatus, setTaskPriority, setTaskDates]);
+
+	if (!task) return;
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -101,12 +102,12 @@ export default function EditTaskModal({
 
 	const handleEditModal = async (e: FormEvent) => {
 		e.preventDefault();
-		const startTimestamp = new Date(taskDates.startDate).getTime();
-		const dueTimestamp = new Date(taskDates.dueDate).getTime();
-		const durationMs = dueTimestamp - startTimestamp;
-		const duration = formatDuration(durationMs);
+		// const startTimestamp = new Date(taskDates.startDate).getTime();
+		// const dueTimestamp = new Date(taskDates.dueDate).getTime();
+		// const durationMs = dueTimestamp - startTimestamp;
+		// const duration = formatDuration(durationMs);
 
-		let newErrors: TaskErrors = {
+		const newErrors: TaskErrors = {
 			taskNameError: "",
 			taskDescriptionError: "",
 			taskStartDateError: "",

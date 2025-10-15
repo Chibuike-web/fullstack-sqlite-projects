@@ -1,12 +1,14 @@
 import express from "express";
 import postsRouter from "./routes/posts";
 import tasksRouter from "./routes/tasks";
+import pollsRouter from "./routes/polls/polls";
 
 const app = express();
 app.use(express.json());
 
+const origin = "http://localhost:5173";
 app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader("Access-Control-Allow-Origin", origin);
 	res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 	res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -20,6 +22,7 @@ app.use((req, res, next) => {
 
 app.use("/posts", postsRouter);
 app.use("/tasks", tasksRouter);
+app.use("/polls", pollsRouter);
 
 app.listen(3291, () => {
 	console.log("Server running on http://localhost:3291");
