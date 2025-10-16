@@ -60,7 +60,9 @@ export default function PollssignUp() {
 		<main className="grid place-items-center min-h-screen px-6 xl:px-0 bg-white">
 			<div className="shadow-xl bg-accent rounded-2xl overflow-hidden my-20 border-2 border-accent">
 				<div className="w-full max-w-[500px] p-8 md:p-10 bg-white rounded-xl ring-2 ring-accent">
-					<span className="text-[20px] font-bold text-center block">PollSpace</span>
+					<span className="tracking-[-0.02em] text-[18px] font-bold text-center block">
+						PollSpace
+					</span>
 					<p className="text-[18px] font-bold text-foreground mt-6 text-center">
 						Create your account
 					</p>

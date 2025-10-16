@@ -182,7 +182,9 @@ export const CreateTaskModal = ({
 				{/* Form */}
 				<form className="flex flex-col gap-4" onSubmit={handleCreateModal}>
 					<div className="flex flex-col gap-2">
-						<Label htmlFor="taskName">Task name</Label>
+						<Label htmlFor="taskName" className="text-sm font-medium">
+							Task name
+						</Label>
 						<Input
 							id="taskName"
 							placeholder="Enter your name"
@@ -196,7 +198,9 @@ export const CreateTaskModal = ({
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
-						<Label htmlFor="taskDescription">Description</Label>
+						<Label htmlFor="taskDescription" className="text-sm font-medium">
+							Description
+						</Label>
 						<Textarea
 							id="taskDescription"
 							placeholder="Enter description"
@@ -227,7 +231,7 @@ export const CreateTaskModal = ({
 						</select>
 					</div>
 					{/* Dates */}
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid md:grid-cols-2 gap-4">
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="startDate" className="text-sm font-medium">
 								Start Date
