@@ -1,55 +1,33 @@
-import { Bell, Search } from "lucide-react";
 import Poll from "./components/Poll";
-import { Button } from "@/components/ui/button";
+import PollsLayout from "./PollsLayout";
 
 export default function Polls() {
 	return (
-		<div>
-			<header className="border-b border-foreground/10 ">
-				<nav className="max-w-[600px] mx-auto flex justify-between py-4 px-6 xl:px-0">
-					<span className="text-[20px] font-bold text-center">PollSpace</span>
-					<div className="flex items-center gap-4">
-						<div className="flex items-center gap-2">
-							<button className="size-8 flex items-center justify-between cursor-pointer">
-								<Bell />
-							</button>
-							<button className="size-8 flex items-center justify-between cursor-pointer">
-								<Search></Search>
-							</button>
-						</div>
-						<span className="size-8 bg-foreground text-white font-bold text-[14px] rounded-full flex items-center justify-center">
-							CM
-						</span>
-					</div>
-				</nav>
-			</header>
-			<main className="py-6 max-w-[600px] flex flex-col gap-6 mx-auto px-6 xl:px-0">
-				<Button className="w-max">Create New Poll</Button>
-				<div className="flex flex-col gap-8">
-					{polls.map((poll) => {
-						const totalVotes = poll.options.reduce((sum, opt) => sum + opt.votes, 0);
-						return (
-							<div key={poll.id} className="flex flex-col gap-4">
-								<h2 className="text-[20px] font-semibold">{poll.question}</h2>
-								<div className="flex flex-col gap-3">
-									<Poll options={poll.options} totalVotes={totalVotes} />
-									<p className="text-foreground/50 font-medium">
-										{totalVotes} votes - Final results
-									</p>
-								</div>
+		<PollsLayout>
+			<div className="flex flex-col gap-8">
+				{polls.map((poll) => {
+					const totalVotes = poll.options.reduce((sum, opt) => sum + opt.votes, 0);
+					return (
+						<div key={poll.id} className="flex flex-col gap-4">
+							<h2 className="text-[20px] font-semibold">{poll.question}</h2>
+							<div className="flex flex-col gap-3">
+								<Poll options={poll.options} totalVotes={totalVotes} />
+								<p className="text-foreground/50 font-medium">{totalVotes} votes - Final results</p>
 							</div>
-						);
-					})}
-				</div>
-			</main>
-		</div>
+						</div>
+					);
+				})}
+			</div>
+		</PollsLayout>
 	);
 }
+
 export type OptionType = {
 	id: number;
 	text: string;
 	votes: number;
 };
+
 type PollType = {
 	id: string;
 	question: string;

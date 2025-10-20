@@ -1,4 +1,4 @@
-import { startTransition, useState, type FormEvent } from "react";
+import { startTransition, useEffect, useState, type FormEvent } from "react";
 import type { Action, Task, TaskErrors } from "./lib/types";
 import { useTaskFormStore, type TaskPriority, type TaskStatus } from "./store/taskFormStore";
 import { X } from "lucide-react";
@@ -43,6 +43,17 @@ export const CreateTaskModal = ({
 		taskStartDateError: "",
 		taskDueDateError: "",
 	});
+
+	useEffect(() => {
+		function handleEscapeKey(event: KeyboardEvent) {
+			if (event.key === "Escape") {
+				setIsCreateTask(false);
+			}
+		}
+
+		document.addEventListener("keydown", handleEscapeKey);
+		return () => document.removeEventListener("keydown", handleEscapeKey);
+	}, [setIsCreateTask]);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -231,7 +242,7 @@ export const CreateTaskModal = ({
 						</select>
 					</div>
 					{/* Dates */}
-					<div className="grid md:grid-cols-2 gap-4">
+					<div className="grid sm:grid-cols-2 gap-4">
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="startDate" className="text-sm font-medium">
 								Start Date

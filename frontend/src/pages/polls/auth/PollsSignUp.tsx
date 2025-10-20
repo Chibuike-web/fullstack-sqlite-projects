@@ -63,7 +63,7 @@ export default function PollssignUp() {
 					<span className="tracking-[-0.02em] text-[18px] font-bold text-center block">
 						PollSpace
 					</span>
-					<p className="text-[18px] font-bold text-foreground mt-6 text-center">
+					<p className="text-[18px] font-semibold text-foreground mt-6 text-center">
 						Create your account
 					</p>
 					<p className="text-foreground/50 font-medium text-center mt-1">
