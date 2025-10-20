@@ -62,6 +62,7 @@ function CreatePollModal({ open, setOpen }: { open: boolean; setOpen: (value: bo
 	});
 
 	const addOption = () => {
+		setErrors((prev) => ({ ...prev, options: "" }));
 		idRef.current += 1;
 		setOptions((prev) => [
 			...prev,
@@ -129,7 +130,7 @@ function CreatePollModal({ open, setOpen }: { open: boolean; setOpen: (value: bo
 						)}
 					</div>
 
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label>Options</Label>
 						<div className="flex flex-col gap-2">
 							{options.map((opt) => (
@@ -137,16 +138,14 @@ function CreatePollModal({ open, setOpen }: { open: boolean; setOpen: (value: bo
 									<div className="w-full">
 										<Input
 											value={opt.text}
-											onChange={(e) => updateOption(opt.id, e.target.value)}
+											onChange={(e) => {
+												updateOption(opt.id, e.target.value);
+												setErrors((prev) => ({ ...prev, options: "" }));
+											}}
 											placeholder={`Option ${opt.id}`}
 											aria-invalid={!!errors.options}
 											aria-describedby={errors.options ? "option-error" : undefined}
 										/>
-										{errors.options && (
-											<p className="text-red-500 font-medium text-[14px] mt-2" id="option-error">
-												{errors.options}
-											</p>
-										)}
 									</div>
 									{options.length > 1 && (
 										<Button size="icon" variant="ghost" onClick={() => removeOption(opt.id)}>
@@ -156,11 +155,16 @@ function CreatePollModal({ open, setOpen }: { open: boolean; setOpen: (value: bo
 								</div>
 							))}
 						</div>
+						{errors.options && (
+							<p className="text-red-500 font-medium text-[14px] mt-2" id="option-error">
+								{errors.options}
+							</p>
+						)}
 						<Button
 							type="button"
 							variant="outline"
 							size="sm"
-							className="mt-2 flex items-center gap-2"
+							className="mt-2 flex items-center gap-2 w-max"
 							onClick={addOption}
 						>
 							<Plus className="h-4 w-4" />
