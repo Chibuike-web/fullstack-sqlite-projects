@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authSchema, type FormData } from "../lib/schemas/authSchema";
 import { useState } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
-import { useToggleVisibility } from "../lib/hooks/use-toggle-visibility";
+import { useToggleVisibility } from "../lib/hooks/useToggleVisibility";
 
 export default function PollssignUp() {
 	const {

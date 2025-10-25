@@ -6,6 +6,7 @@ import z from "zod";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { createSession } from "../../../lib/session";
+import { middleware } from "./middleware";
 
 const router = Router();
 
@@ -68,9 +69,47 @@ router.post("/sign-in", async (req: Request, res: Response) => {
 router.get("/", (_, res: Response) => {
 	try {
 		const result = db.select().from(polls).all();
-		res.status(200).json({ status: "success", result });
+		res.status(200).json({ status: "success", result: result ?? [] });
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch polls" });
+	}
+});
+
+router.post("/", middleware, async (req: Request & { userId?: string }, res: Response) => {
+	try {
+		const { question, options } = req.body;
+
+		if (!question || !Array.isArray(options) || options.length === 0) {
+			return res.status(400).json({ error: "Invalid input" });
+		}
+		const formattedOptions = JSON.stringify(
+			options.map((opt: any, index: number) => ({
+				id: index + 1,
+				text: opt.text,
+				votes: 0,
+			}))
+		);
+
+		const pollsData = await db
+			.insert(polls)
+			.values({
+				id: crypto.randomUUID(),
+				userId: Number(req.userId),
+				question,
+				options: formattedOptions,
+				createdAt: new Date().toISOString(),
+			})
+			.returning();
+		const mainPoll = pollsData[0];
+		return res.status(201).json({
+			status: "success",
+			message: "Poll created successfully",
+			data: mainPoll,
+			userId: req.userId,
+		});
+	} catch (error) {
+		console.error("Create poll failed:", error);
+		res.status(500).json({ error: "Failed to create poll" });
 	}
 });
 

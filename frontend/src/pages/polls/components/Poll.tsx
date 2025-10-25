@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { OptionType } from "../Polls";
+import type { OptionType } from "../lib/types/optionType";
 
 type PollProps = {
 	options: OptionType[];
@@ -32,7 +32,7 @@ const PollBar = ({
 		3: "bg-purple-500",
 	};
 
-	const percentage = (opt.votes / totalVotes) * 100;
+	const percentage = opt.votes ? (opt.votes / totalVotes) * 100 : 0;
 
 	return (
 		<button className={cn("flex py-2 rounded-[8px] px-4 cursor-pointer", barColor[index])}>
