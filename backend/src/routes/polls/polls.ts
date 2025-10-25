@@ -75,6 +75,29 @@ router.get("/", (_, res: Response) => {
 	}
 });
 
+router.get("/user", middleware, async (req: Request & { userId?: string }, res: Response) => {
+	try {
+		const user = db
+			.select()
+			.from(users)
+			.where(eq(users.id, Number(req.userId)))
+			.get();
+
+		if (!user) {
+			res.clearCookie("token_tasks");
+			return res.status(404).json({ redirect: "/sign-up" });
+		}
+		return res.status(200).json({
+			name: `${user.firstName} ${user.lastName}`,
+			email: user.email,
+			id: user.id,
+		});
+	} catch (error) {
+		console.error("Error fetching user:", error);
+		res.status(500).json({ error: "Failed to fetch user" });
+	}
+});
+
 router.post("/", middleware, async (req: Request & { userId?: string }, res: Response) => {
 	try {
 		const { question, options } = req.body;
@@ -100,6 +123,7 @@ router.post("/", middleware, async (req: Request & { userId?: string }, res: Res
 				createdAt: new Date().toISOString(),
 			})
 			.returning();
+
 		const mainPoll = pollsData[0];
 		return res.status(201).json({
 			status: "success",
