@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
-import { polls, users } from "../../../polls/lib/schema";
+import { polls, users, votes } from "../../../polls/lib/schema";
 import { db } from "../../../polls/lib";
 import { authSchema } from "./authSchema";
 import z from "zod";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { createSession } from "../../../lib/session";
 import { middleware } from "./middleware";
@@ -69,7 +69,12 @@ router.post("/sign-in", async (req: Request, res: Response) => {
 router.get("/", (_, res: Response) => {
 	try {
 		const result = db.select().from(polls).all();
-		res.status(200).json({ status: "success", result: result ?? [] });
+		const parsedResult = result.map((item) => ({
+			...item,
+			options: typeof item.options === "string" ? JSON.parse(item.options) : item.options,
+		}));
+
+		res.status(200).json({ status: "success", result: parsedResult ?? [] });
 	} catch (error) {
 		res.status(500).json({ error: "Failed to fetch polls" });
 	}
@@ -136,5 +141,66 @@ router.post("/", middleware, async (req: Request & { userId?: string }, res: Res
 		res.status(500).json({ error: "Failed to create poll" });
 	}
 });
+
+router.post(
+	"/vote/:pollId/:optionId",
+	middleware,
+	async (req: Request & { userId?: string }, res: Response) => {
+		try {
+			const { pollId, optionId } = req.params;
+			const userId = Number(req.userId);
+
+			if (!pollId || !optionId) {
+				return res.status(400).json({ error: "Invalid request" });
+			}
+
+			const previousVote = db
+				.select()
+				.from(votes)
+				.where(and(eq(votes.pollId, pollId), eq(votes.userId, userId)))
+				.get();
+
+			if (previousVote) {
+				return res.status(403).json({ error: "You have already voted on this poll" });
+			}
+
+			const poll = db.select().from(polls).where(eq(polls.id, pollId)).get();
+			if (!poll) {
+				return res.status(404).json({ error: "Poll not found" });
+			}
+
+			const options = typeof poll.options === "string" ? JSON.parse(poll.options) : poll.options;
+			const selectedOption = options.find((opt: any) => opt.id === Number(optionId));
+
+			if (!selectedOption) {
+				return res.status(400).json({ error: "Invalid option" });
+			}
+
+			selectedOption.votes += 1;
+
+			db.update(polls)
+				.set({ options: JSON.stringify(options) })
+				.where(eq(polls.id, pollId))
+				.run();
+
+			db.insert(votes)
+				.values({ pollId, optionId: Number(optionId), userId })
+				.run();
+
+			return res.status(200).json({
+				status: "success",
+				message: "Vote recorded",
+				data: {
+					pollId,
+					optionId,
+					options,
+				},
+			});
+		} catch (error) {
+			console.error("Vote failed", error);
+			res.status(500).json({ error: "Failed to process vote" });
+		}
+	}
+);
 
 export default router;

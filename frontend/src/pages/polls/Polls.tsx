@@ -4,6 +4,7 @@ import PollsLayout from "./PollsLayout";
 import { fetchPolls } from "./lib/api/fetchPolls";
 import type { PollType } from "./lib/types/pollType";
 import type { OptionType } from "./lib/types/optionType";
+import PollContextProvider from "./lib/context/PollContext";
 
 export default function Polls() {
 	return (
@@ -33,12 +34,7 @@ const PollsList = () => {
 			</p>
 		);
 
-	const rawPolls = data.result as PollType[];
-
-	const polls = rawPolls.map((item) => ({
-		...item,
-		options: typeof item.options === "string" ? JSON.parse(item.options) : item.options,
-	}));
+	const polls = data.result as PollType[];
 
 	if (!polls.length) {
 		return <p className="text-foreground/60">No polls available yet.</p>;
@@ -54,7 +50,9 @@ const PollsList = () => {
 					<div key={poll.id} className="flex flex-col gap-4">
 						<h2 className="text-[20px] font-semibold">{poll.question}</h2>
 						<div className="flex flex-col gap-3">
-							<Poll options={poll.options} totalVotes={totalVotes} />
+							<PollContextProvider value={{ poll: poll, totalVotes: totalVotes }}>
+								<Poll />
+							</PollContextProvider>
 							<p className="text-foreground/50 font-medium">{totalVotes} votes - Final results</p>
 						</div>
 					</div>

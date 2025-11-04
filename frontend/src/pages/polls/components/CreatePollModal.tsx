@@ -68,11 +68,10 @@ export default function CreatePollModal({
 
 		const validOptions = options
 			.filter((o) => o.text.trim() !== "")
-			.map((o) => ({ text: o.text.trim() }));
+			.map((o) => ({ id: idRef.current, text: o.text.trim(), votes: 0 }));
 
 		setErrors({ question: "", options: "" });
 
-		// Fire mutation
 		try {
 			console.log("📤 Creating poll:", { question, validOptions });
 			await mutateAsync({ question, options: validOptions });

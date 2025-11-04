@@ -1,26 +1,31 @@
 import { Bell, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePollModal from "./components/CreatePollModal";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "./lib/api/fetchUser";
+import { useNavigate } from "react-router";
 
 export default function PollsLayout({ children }: { children: React.ReactNode }) {
 	const [open, setOpen] = useState(false);
-	const { data, isLoading } = useQuery({
+	const navigate = useNavigate();
+	const { data, isLoading, error } = useQuery({
 		queryKey: ["user"],
 		queryFn: fetchUser,
-		retry: 2,
-		retryDelay: (attempt) => 1000 * attempt,
-		staleTime: Infinity,
-		gcTime: Infinity,
+		retry: false,
 	});
+
+	useEffect(() => {
+		if (error) {
+			navigate("/polls/sign-in");
+		}
+	}, [error, navigate]);
 
 	if (isLoading) return;
 
 	return (
 		<div>
-			<header className="border-b border-foreground/10 ">
+			<header className="border-b border-foreground/10 sticky top-0 bg-white z-10">
 				<nav className="max-w-[600px] mx-auto flex justify-between py-4 px-6 xl:px-0">
 					<span className="text-[20px] font-bold text-center">PollSpace</span>
 					<div className="flex items-center gap-4">
