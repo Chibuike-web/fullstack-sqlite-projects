@@ -35,7 +35,7 @@ export default function PollsSignIn() {
 				return;
 			}
 			reset();
-			navigate("/polls");
+			navigate(`/polls/${resData.userId}`);
 		} catch (err) {
 			console.error("Issue authenticating user", err);
 			setSignInError("Something went wrong. Please try again.");

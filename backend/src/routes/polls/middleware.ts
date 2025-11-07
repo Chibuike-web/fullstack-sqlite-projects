@@ -7,13 +7,24 @@ export async function middleware(
 	next: NextFunction
 ) {
 	try {
-		const token = req.cookies.token_polls;
-		if (!token) return res.status(401).json({ message: "No token" });
+		const userId = req.headers.authorization;
+
+		if (!userId) {
+			return res.status(401).json({ message: "No user ID provided in authorization header" });
+		}
+
+		const tokenKey = `token_polls_${userId}`;
+		const token = req.cookies[tokenKey];
+
+		if (!token) {
+			return res.status(401).json({ message: "No matching token for this user" });
+		}
+
 		const payload = await verifySessionToken(token);
 		req.userId = payload.userId as string;
 		next();
-	} catch (error) {
-		console.error(error);
-		return res.status(401).json({ error: "Invalid or expired token" });
+	} catch (err) {
+		console.error(err);
+		return res.status(401).json({ message: "Invalid or expired token" });
 	}
 }

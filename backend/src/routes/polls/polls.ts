@@ -58,8 +58,14 @@ router.post("/sign-in", async (req: Request, res: Response) => {
 
 		const token = await createSession(existingUser.id);
 
-		res.cookie("token_polls", token, { httpOnly: true, secure: true, sameSite: "none" });
-		res.status(201).json({ status: "success", message: "Logged in successfully" });
+		res.cookie(`token_polls_${existingUser.id}`, token, {
+			httpOnly: true,
+			secure: true,
+			sameSite: "none",
+		});
+		res
+			.status(201)
+			.json({ status: "success", message: "Logged in successfully", userId: existingUser.id });
 	} catch (error) {
 		console.error("Sign in failed", error);
 		return res.status(500).json({ error: "Internal server error" });

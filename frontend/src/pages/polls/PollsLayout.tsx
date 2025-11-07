@@ -4,24 +4,27 @@ import { useEffect, useState } from "react";
 import CreatePollModal from "./components/CreatePollModal";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "./lib/api/fetchUser";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export default function PollsLayout({ children }: { children: React.ReactNode }) {
 	const [open, setOpen] = useState(false);
+	const { userId } = useParams();
 	const navigate = useNavigate();
-	const { data, isLoading, error } = useQuery({
+	if (!userId) return;
+	const { data, isLoading, isError } = useQuery({
 		queryKey: ["user"],
-		queryFn: fetchUser,
+		queryFn: () => fetchUser(userId),
 		retry: false,
 	});
 
 	useEffect(() => {
-		if (error) {
+		if (isError) {
 			navigate("/polls/sign-in");
 		}
-	}, [error, navigate]);
+	}, [isError, navigate]);
 
-	if (isLoading) return;
+	if (isLoading) return <p className="min-h-screen grid place-items-center">Authenticating...</p>;
+	if (isError) return null;
 
 	return (
 		<div>

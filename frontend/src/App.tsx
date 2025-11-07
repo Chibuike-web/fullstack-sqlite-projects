@@ -15,7 +15,7 @@ export default function App() {
 			<Routes>
 				<Route path="/" element={<Posts />} />
 				<Route path="/tasks" element={<Tasks />} />
-				<Route path="/polls" element={<Polls />} />
+				<Route path="/polls/:userId" element={<Polls />} />
 				<Route path="/polls/sign-in" element={<PollsSignIn />} />
 				<Route path="/polls/sign-up" element={<PollsSignUp />} />
 				<Route path="/notes" element={<Notes />} />
