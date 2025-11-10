@@ -1,9 +1,9 @@
 import type { PollType } from "../types/pollType";
 
-export async function createPoll(data: PollType) {
+export async function createPoll(data: PollType, userId: string) {
 	const res = await fetch("http://localhost:3291/polls", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json", Authorization: userId },
 		body: JSON.stringify(data),
 		credentials: "include",
 	});

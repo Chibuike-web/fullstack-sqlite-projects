@@ -28,6 +28,7 @@ router.post("/sign-up", async (req: Request, res: Response) => {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		db.insert(users)
 			.values({
+				id: crypto.randomUUID(),
 				firstName,
 				lastName,
 				email,
@@ -86,18 +87,17 @@ router.get("/", (_, res: Response) => {
 	}
 });
 
-router.get("/user", middleware, async (req: Request & { userId?: string }, res: Response) => {
+type AuthenticatedRequest = Request & {
+	userId?: string;
+};
+router.get("/user", middleware, async (req: AuthenticatedRequest, res: Response) => {
 	try {
-		const user = db
-			.select()
-			.from(users)
-			.where(eq(users.id, Number(req.userId)))
-			.get();
+		if (!req.userId) return res.status(401).json({ status: "failed", error: "No id available" });
 
-		if (!user) {
-			res.clearCookie("token_tasks");
-			return res.status(404).json({ redirect: "/sign-up" });
-		}
+		const user = db.select().from(users).where(eq(users.id, req.userId)).get();
+
+		if (!user) return res.status(404).json({ status: "failed", error: "User does not exist" });
+
 		return res.status(200).json({
 			name: `${user.firstName} ${user.lastName}`,
 			email: user.email,
@@ -105,12 +105,14 @@ router.get("/user", middleware, async (req: Request & { userId?: string }, res: 
 		});
 	} catch (error) {
 		console.error("Error fetching user:", error);
-		res.status(500).json({ error: "Failed to fetch user" });
+		res.status(500).json({ status: "failed", error: "Failed to fetch user" });
 	}
 });
 
-router.post("/", middleware, async (req: Request & { userId?: string }, res: Response) => {
+router.post("/", middleware, async (req: AuthenticatedRequest, res: Response) => {
 	try {
+		if (!req.userId) return res.status(401).json({ status: "failed", error: "No id available" });
+
 		const { question, options } = req.body;
 
 		if (!question || !Array.isArray(options) || options.length === 0) {
@@ -128,7 +130,7 @@ router.post("/", middleware, async (req: Request & { userId?: string }, res: Res
 			.insert(polls)
 			.values({
 				id: crypto.randomUUID(),
-				userId: Number(req.userId),
+				userId: req.userId,
 				question,
 				options: formattedOptions,
 				createdAt: new Date().toISOString(),

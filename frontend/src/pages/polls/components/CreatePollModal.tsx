@@ -12,6 +12,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import useCreatePoll from "../lib/hooks/useCreatePoll";
+import { useParams } from "react-router";
 
 export default function CreatePollModal({
 	open,
@@ -21,7 +22,8 @@ export default function CreatePollModal({
 	setOpen: (value: boolean) => void;
 }) {
 	let idRef = useRef(1);
-	const { mutateAsync, isPending } = useCreatePoll();
+	const { userId } = useParams();
+	const { mutateAsync, isPending } = useCreatePoll(userId ?? "");
 	const [question, setQuestion] = useState("");
 	const [options, setOptions] = useState([
 		{
@@ -79,6 +81,7 @@ export default function CreatePollModal({
 			setOpen(false);
 			setQuestion("");
 			setOptions([{ id: 1, text: "", votes: 0 }]);
+			idRef.current = 1;
 		} catch (err) {
 			console.error("❌ Create poll failed:", err);
 		}

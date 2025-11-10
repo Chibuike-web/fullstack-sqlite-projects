@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPoll } from "../api/createPoll";
+import type { PollType } from "../types/pollType";
 
-export default function useCreatePoll() {
+export default function useCreatePoll(userId: string) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: createPoll,
+		mutationFn: (data: PollType) => createPoll(data, userId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["polls"] });
 		},

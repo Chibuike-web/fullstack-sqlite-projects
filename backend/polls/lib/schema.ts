@@ -3,7 +3,7 @@ import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
 // --- Users table ---
 export const users = sqliteTable("users", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
+	id: text("id").primaryKey(),
 	email: text("email").notNull(),
 	password: text("password").notNull(),
 	firstName: text("first_name"),
@@ -13,7 +13,7 @@ export const users = sqliteTable("users", {
 // --- Polls table ---
 export const polls = sqliteTable("polls", {
 	id: text("id").primaryKey().notNull(),
-	userId: integer("user_id")
+	userId: text("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
 	question: text("questions").notNull(),
