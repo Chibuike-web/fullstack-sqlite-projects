@@ -3,12 +3,12 @@ import { vote } from "../api/vote";
 import type { PollType } from "../types/pollType";
 import type { OptionType } from "../types/optionType";
 
-export default function useVote() {
+export default function useVote(userId: string) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: ({ optionId, pollId }: { optionId: number; pollId: string }) =>
-			vote(optionId, pollId),
+			vote(optionId, pollId, userId),
 
 		onMutate: async ({ optionId, pollId }) => {
 			await queryClient.cancelQueries({ queryKey: ["poll"] });

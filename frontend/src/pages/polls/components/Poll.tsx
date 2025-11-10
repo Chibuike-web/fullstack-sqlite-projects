@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import type { OptionType } from "../lib/types/optionType";
 import useVote from "../lib/hooks/useVote";
 import { usePollContext } from "../lib/context/PollContext";
+import { useParams } from "react-router";
 
 export default function Poll() {
 	const { poll } = usePollContext();
@@ -15,7 +16,9 @@ export default function Poll() {
 }
 
 const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
-	const { mutate: submitVote } = useVote();
+	const { userId } = useParams();
+
+	const { mutate: submitVote } = useVote(userId ?? "");
 
 	const barColor: Record<number, string> = {
 		0: "bg-red-500",
@@ -26,7 +29,7 @@ const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
 
 	const { poll, totalVotes } = usePollContext();
 
-	const percentage = (opt.votes / totalVotes) * 100;
+	const percentage = totalVotes === 0 ? 0 : (opt.votes / totalVotes) * 100;
 
 	return (
 		<button
@@ -38,9 +41,13 @@ const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
 				<p>{percentage.toFixed(2)}%</p>
 			</div>
 			<div
-				className={cn("absolute top-0 bottom-0 left-0 z-[-10]", barColor[index])}
+				className={cn(
+					"absolute top-0 bottom-0 left-0 z-[-10] bg-gray-100",
+					percentage && barColor[index]
+				)}
 				style={{ width: `${percentage}%` }}
 			/>
+			<div className="absolute top-0 bottom-0 left-0 right-0 z-[-100] bg-gray-100" />
 		</button>
 	);
 };
