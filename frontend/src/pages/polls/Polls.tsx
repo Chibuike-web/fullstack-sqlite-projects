@@ -34,14 +34,14 @@ const PollsList = () => {
 			</p>
 		);
 
-	const polls = data.result as PollType[];
+	const polls = (Array.isArray(data.result) ? data.result : data) ?? [];
 
-	if (!polls.length) {
+	if (polls.length === 0) {
 		return <p className="text-foreground/60">No polls available yet.</p>;
 	}
 	return (
 		<>
-			{polls.map((poll) => {
+			{polls.map((poll: PollType) => {
 				const totalVotes = poll.options.reduce(
 					(sum: number, opt: OptionType) => sum + (opt.votes ?? 0),
 					0
@@ -53,7 +53,9 @@ const PollsList = () => {
 							<PollContextProvider value={{ poll: poll, totalVotes: totalVotes }}>
 								<Poll />
 							</PollContextProvider>
-							<p className="text-foreground/50 font-medium">{totalVotes} votes - Final results</p>
+							{totalVotes > 0 && (
+								<p className="text-foreground/50 font-medium">{totalVotes} votes - Final results</p>
+							)}
 						</div>
 					</div>
 				);

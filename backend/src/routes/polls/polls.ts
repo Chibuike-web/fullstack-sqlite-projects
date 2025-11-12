@@ -155,8 +155,10 @@ router.post(
 	middleware,
 	async (req: Request & { userId?: string }, res: Response) => {
 		try {
+			if (!req.userId) return res.status(401).json({ status: "failed", error: "No id available" });
+
 			const { pollId, optionId } = req.params;
-			const userId = Number(req.userId);
+			const userId = req.userId;
 
 			if (!pollId || !optionId) {
 				return res.status(400).json({ error: "Invalid request" });

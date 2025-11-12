@@ -10,7 +10,7 @@ const PollContext = createContext<ContextType | null>(null);
 
 export const usePollContext = () => {
 	const context = useContext(PollContext);
-	if (!context) throw new Error("usePollContext must be used inside PollProvider");
+	if (!context) throw new Error("usePollContext must be used inside PollContextProvider");
 	return context;
 };
 

@@ -24,7 +24,7 @@ export const polls = sqliteTable("polls", {
 // --- Votes table ---
 export const votes = sqliteTable("votes", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	userId: integer("user_id")
+	userId: text("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
 	pollId: text("poll_id")

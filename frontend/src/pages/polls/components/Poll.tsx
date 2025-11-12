@@ -18,7 +18,7 @@ export default function Poll() {
 const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
 	const { userId } = useParams();
 
-	const { mutate: submitVote } = useVote(userId ?? "");
+	const { mutate: submitVote, isPending } = useVote(userId ?? "");
 
 	const barColor: Record<number, string> = {
 		0: "bg-red-500",
@@ -33,7 +33,10 @@ const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
 
 	return (
 		<button
-			className="relative cursor-pointer w-full flex py-2 rounded-[8px] px-4 overflow-hidden"
+			className={cn(
+				"relative cursor-pointer w-full flex py-2 rounded-[8px] px-4 overflow-hidden",
+				isPending && "opacity-50"
+			)}
 			onClick={() => submitVote({ optionId: opt.id, pollId: poll.id ?? "" })}
 		>
 			<div className="flex justify-between w-full font-semibold">
@@ -42,12 +45,13 @@ const PollBar = ({ opt, index }: { opt: OptionType; index: number }) => {
 			</div>
 			<div
 				className={cn(
-					"absolute top-0 bottom-0 left-0 z-[-10] bg-gray-100",
-					percentage && barColor[index]
+					"absolute top-0 bottom-0 left-0 -z-5 rounded-[8px]",
+					percentage && barColor[index],
+					"transition-all ease-in-out duration-500"
 				)}
 				style={{ width: `${percentage}%` }}
 			/>
-			<div className="absolute top-0 bottom-0 left-0 right-0 z-[-100] bg-gray-100" />
+			<div className="absolute top-0 bottom-0 left-0 right-0 -z-10 bg-gray-100" />
 		</button>
 	);
 };

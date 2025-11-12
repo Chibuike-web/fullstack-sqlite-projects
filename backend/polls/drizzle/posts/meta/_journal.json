@@ -15,6 +15,13 @@
       "when": 1762798912257,
       "tag": "0001_loose_betty_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762942462514,
+      "tag": "0002_silky_salo",
+      "breakpoints": true
     }
   ]
 }
