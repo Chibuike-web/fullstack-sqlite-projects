@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1760511624025,
-      "tag": "0000_wandering_siren",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1762798912257,
-      "tag": "0001_loose_betty_ross",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1762942462514,
-      "tag": "0002_silky_salo",
+      "when": 1762969466421,
+      "tag": "0000_thankful_unus",
       "breakpoints": true
     }
   ]

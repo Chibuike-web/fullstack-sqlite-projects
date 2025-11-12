@@ -1,6 +1,6 @@
 CREATE TABLE `polls` (
 	`id` text PRIMARY KEY NOT NULL,
-	`user_id` integer NOT NULL,
+	`user_id` text NOT NULL,
 	`questions` text NOT NULL,
 	`options` text NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP,
@@ -8,7 +8,7 @@ CREATE TABLE `polls` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`email` text NOT NULL,
 	`password` text NOT NULL,
 	`first_name` text,
@@ -17,7 +17,7 @@ CREATE TABLE `users` (
 --> statement-breakpoint
 CREATE TABLE `votes` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`user_id` integer NOT NULL,
+	`user_id` text NOT NULL,
 	`poll_id` text NOT NULL,
 	`option_id` integer NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP,

@@ -70,7 +70,7 @@ export default function CreatePollModal({
 
 		const validOptions = options
 			.filter((o) => o.text.trim() !== "")
-			.map((o) => ({ id: idRef.current, text: o.text.trim(), votes: 0 }));
+			.map((o) => ({ id: o.id, text: o.text.trim(), votes: 0 }));
 
 		setErrors({ question: "", options: "" });
 
